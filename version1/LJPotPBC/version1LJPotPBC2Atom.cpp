@@ -269,6 +269,8 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
     }
+    std::cout<<"entering while"<<std::endl;
+
     while (fls < this->flushMaxNum and active == true) {
         std::vector<std::vector<double>> xA_AllPerFlush;
         std::vector<std::vector<double>> xB_AllPerFlush;
@@ -298,12 +300,13 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
             xB_AllPerFlush.push_back(arma::conv_to<std::vector<double>>::from(xBCurr));
             UAllPerFlush.push_back(UCurr);
             LAllPerFlush.push_back(LCurr);
+//            std::cout<<"move "<<i<<std::endl;
 
             U_Ptr[i]=UCurr;
             L_Ptr[i]=LCurr;
             for(int k=0;k<N;k++){
-                xA_Ptr[i*N+k]=xACurr(i);
-                xB_Ptr[i*N+k]=xBCurr(i);
+                xA_Ptr[i*N+k]=xACurr(k);
+                xB_Ptr[i*N+k]=xBCurr(k);
             }
 
 
@@ -562,8 +565,8 @@ void version1dLJPot2Atom::executionMCAfterEq(const int &lag, const int &loopEq, 
             U_Ptr[i]=UCurr;
             L_Ptr[i]=LCurr;
             for(int k=0;k<N;k++){
-                xA_Ptr[i*N+k]=xACurr(i);
-                xB_Ptr[i*N+k]=xBCurr(i);
+                xA_Ptr[i*N+k]=xACurr(k);
+                xB_Ptr[i*N+k]=xBCurr(k);
             }
 
         }//end for loop
