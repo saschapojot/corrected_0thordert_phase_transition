@@ -321,9 +321,12 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
         this->saveVecToXML(outUFileName, UAllPerFlush);
         this->saveVecToBin(outUBinFileName,UAllPerFlush);
 
+
         std::string outU_PtrPickleFileName=outUAllPickleSubDir+filenameMiddle+".UAll.pkl";
         save_array_to_pickle(U_Ptr.get(),moveNumInOneFlush,outU_PtrPickleFileName);
+        std::string outU_PtrBinFileName=outU_PtrAllBinSubDir+filenameMiddle+".UAll.bin";
 
+        save_to_bin_file(U_Ptr.get(),moveNumInOneFlush,outU_PtrBinFileName);
         std::string out_xAFileName = out_xA_AllSubDir + filenameMiddle + ".xA_All.xml";
         this->saveVecVecToXML(out_xAFileName, xA_AllPerFlush);
         std::string out_xABinFileName=out_xA_AllBinSubDir+filenameMiddle+".xA_All.bin";
