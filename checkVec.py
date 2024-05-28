@@ -9,6 +9,7 @@ import re
 from copy import deepcopy
 import warnings
 from scipy.stats import ks_2samp
+import pickle
 
 
 #This script checks if a vector reaches equilibrium
@@ -65,13 +66,9 @@ def parse1File(fileName):
     :return: the values in the vector
     """
 
-    tree=ET.parse(fileName)
-    root = tree.getroot()
-    vec=root.find("vec")
-    vec_items=vec.findall('item')
-    vecValsAll=[float(item.text) for item in vec_items]
-    # vecValsAll=np.array(vecValsAll)
-    return vecValsAll
+    with open(fileName,"rb") as fptr:
+        vec=list((pickle.load(fptr)))
+        return vec
 
 
 #combine all vectors
