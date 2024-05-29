@@ -254,21 +254,21 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
     std::vector<double> last_xA;
     std::vector<double> last_xB;
     double last_L;
-    std::shared_ptr<double[]> U_Ptr;
-    std::shared_ptr<double[]> L_Ptr;
-    std::shared_ptr<double[]> xA_Ptr;
-    std::shared_ptr<double[]> xB_Ptr;
-    try {
-        U_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
-        L_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
-        xA_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
-        xB_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
-    }
-    catch (const std::bad_alloc& e) {
-        std::cerr << "Memory allocation error: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-    }
+//    std::shared_ptr<double[]> U_Ptr;
+//    std::shared_ptr<double[]> L_Ptr;
+//    std::shared_ptr<double[]> xA_Ptr;
+//    std::shared_ptr<double[]> xB_Ptr;
+//    try {
+//        U_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
+//        L_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
+//        xA_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
+//        xB_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
+//    }
+//    catch (const std::bad_alloc& e) {
+//        std::cerr << "Memory allocation error: " << e.what() << std::endl;
+//    } catch (const std::exception& e) {
+//        std::cerr << "Exception: " << e.what() << std::endl;
+//    }
     std::cout<<"entering while"<<std::endl;
 
     while (fls < this->flushMaxNum and active == true) {
@@ -302,12 +302,12 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
             LAllPerFlush.push_back(LCurr);
 //            std::cout<<"move "<<i<<std::endl;
 
-            U_Ptr[i]=UCurr;
-            L_Ptr[i]=LCurr;
-            for(int k=0;k<N;k++){
-                xA_Ptr[i*N+k]=xACurr(k);
-                xB_Ptr[i*N+k]=xBCurr(k);
-            }
+//            U_Ptr[i]=UCurr;
+//            L_Ptr[i]=LCurr;
+//            for(int k=0;k<N;k++){
+//                xA_Ptr[i*N+k]=xACurr(k);
+//                xB_Ptr[i*N+k]=xBCurr(k);
+//            }
 
 
         }//end for loop in 1 flush
@@ -323,17 +323,17 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
 
 
         std::string outU_PtrPickleFileName=outUAllPickleSubDir+filenameMiddle+".UAll.pkl";
-        save_array_to_pickle(U_Ptr.get(),moveNumInOneFlush,outU_PtrPickleFileName);
+//        save_array_to_pickle(U_Ptr.get(),moveNumInOneFlush,outU_PtrPickleFileName);
         std::string outU_PtrBinFileName=outU_PtrAllBinSubDir+filenameMiddle+".UAll.bin";
 
-        save_to_bin_file(U_Ptr.get(),moveNumInOneFlush,outU_PtrBinFileName);
+//        save_to_bin_file(U_Ptr.get(),moveNumInOneFlush,outU_PtrBinFileName);
         std::string out_xAFileName = out_xA_AllSubDir + filenameMiddle + ".xA_All.xml";
         this->saveVecVecToXML(out_xAFileName, xA_AllPerFlush);
         std::string out_xABinFileName=out_xA_AllBinSubDir+filenameMiddle+".xA_All.bin";
         this->saveVecVecToBin(out_xABinFileName,xA_AllPerFlush);
 
         std::string out_xA_PtrFileName=out_xA_PtrAllBinSubDir+filenameMiddle+".xA_PtrAll.bin";
-        save_to_bin_file(xA_Ptr.get(),moveNumInOneFlush*N,out_xA_PtrFileName);
+//        save_to_bin_file(xA_Ptr.get(),moveNumInOneFlush*N,out_xA_PtrFileName);
 
 
         std::string out_xBFileName = out_xB_AllSubDir + filenameMiddle + ".xB_All.xml";
@@ -341,7 +341,7 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
         std::string out_xBBinFileName=out_xB_AllBinSubDir+filenameMiddle+".xB_All.bin";
         this->saveVecVecToBin(out_xBBinFileName,xB_AllPerFlush);
         std::string out_xB_PtrFileName=out_xB_PtrAllBinSubDir+filenameMiddle+".xB_PtrAll.bin";
-        save_to_bin_file(xB_Ptr.get(),moveNumInOneFlush*N,out_xB_PtrFileName);
+//        save_to_bin_file(xB_Ptr.get(),moveNumInOneFlush*N,out_xB_PtrFileName);
 
 
         std::string outLFileName=outLAllSubDir+filenameMiddle+".LAll.xml";
@@ -349,7 +349,7 @@ void version1dLJPot2Atom::readEqMc(int &lag, int &loopTotal, bool &equilibrium, 
         std::string outLBinFileName=outLAllBinSubDir+filenameMiddle+".LAll.bin";
         this->saveVecToBin(outLBinFileName,LAllPerFlush);
         std::string outL_PtrFileName=outL_PtrAllBinSubDir+filenameMiddle+".L_PtrAll.bin";
-        save_to_bin_file(L_Ptr.get(),moveNumInOneFlush,outL_PtrFileName);
+//        save_to_bin_file(L_Ptr.get(),moveNumInOneFlush,outL_PtrFileName);
 
 
         const auto tflushEnd{std::chrono::steady_clock::now()};
@@ -522,21 +522,21 @@ void version1dLJPot2Atom::executionMCAfterEq(const int &lag, const int &loopEq, 
     const auto tMCStart{std::chrono::steady_clock::now()};
 
     std::cout << "remaining flush number: " << remainingFlushNum << std::endl;
-    std::shared_ptr<double[]> U_Ptr;
-    std::shared_ptr<double[]> L_Ptr;
-    std::shared_ptr<double[]> xA_Ptr;
-    std::shared_ptr<double[]> xB_Ptr;
-    try {
-        U_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
-        L_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
-        xA_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
-        xB_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
-    }
-    catch (const std::bad_alloc& e) {
-        std::cerr << "Memory allocation error: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-    }
+//    std::shared_ptr<double[]> U_Ptr;
+//    std::shared_ptr<double[]> L_Ptr;
+//    std::shared_ptr<double[]> xA_Ptr;
+//    std::shared_ptr<double[]> xB_Ptr;
+//    try {
+//        U_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
+//        L_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush]);
+//        xA_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
+//        xB_Ptr = std::shared_ptr<double[]>(new double[moveNumInOneFlush * N]);
+//    }
+//    catch (const std::bad_alloc& e) {
+//        std::cerr << "Memory allocation error: " << e.what() << std::endl;
+//    } catch (const std::exception& e) {
+//        std::cerr << "Exception: " << e.what() << std::endl;
+//    }
     for (int fls = 0; fls < remainingFlushNum; fls++) {
         std::vector<std::vector<double>> xA_AllPerFlush;
         std::vector<std::vector<double>> xB_AllPerFlush;
@@ -565,12 +565,12 @@ void version1dLJPot2Atom::executionMCAfterEq(const int &lag, const int &loopEq, 
             UAllPerFlush.push_back(UCurr);
             LAllPerFlush.push_back(LCurr);
 
-            U_Ptr[i]=UCurr;
-            L_Ptr[i]=LCurr;
-            for(int k=0;k<N;k++){
-                xA_Ptr[i*N+k]=xACurr(k);
-                xB_Ptr[i*N+k]=xBCurr(k);
-            }
+//            U_Ptr[i]=UCurr;
+//            L_Ptr[i]=LCurr;
+//            for(int k=0;k<N;k++){
+//                xA_Ptr[i*N+k]=xACurr(k);
+//                xB_Ptr[i*N+k]=xBCurr(k);
+//            }
 
         }//end for loop
         int loopEnd = loopStart + moveNumInOneFlush - 1;
@@ -583,7 +583,7 @@ void version1dLJPot2Atom::executionMCAfterEq(const int &lag, const int &loopEq, 
         this->saveVecToBin(outUBinFileName,UAllPerFlush);
 
         std::string outU_PtrPickleFileName=outUAllPickleSubDir+filenameMiddle+".UAll.pkl";
-        save_array_to_pickle(U_Ptr.get(),moveNumInOneFlush,outU_PtrPickleFileName);
+//        save_array_to_pickle(U_Ptr.get(),moveNumInOneFlush,outU_PtrPickleFileName);
 
         std::string out_xAFileName = out_xA_AllSubDir + filenameMiddle + ".xA_All.xml";
         this->saveVecVecToXML(out_xAFileName, xA_AllPerFlush);
@@ -591,14 +591,14 @@ void version1dLJPot2Atom::executionMCAfterEq(const int &lag, const int &loopEq, 
         this->saveVecVecToBin(out_xABinFileName,xA_AllPerFlush);
 
         std::string out_xA_PtrFileName=out_xA_PtrAllBinSubDir+filenameMiddle+".xA_PtrAll.bin";
-        save_to_bin_file(xA_Ptr.get(),moveNumInOneFlush*N,out_xA_PtrFileName);
+//        save_to_bin_file(xA_Ptr.get(),moveNumInOneFlush*N,out_xA_PtrFileName);
 
         std::string out_xBFileName = out_xB_AllSubDir + filenameMiddle + ".xB_All.xml";
         this->saveVecVecToXML(out_xBFileName, xB_AllPerFlush);
         std::string out_xBBinFileName=out_xB_AllBinSubDir+filenameMiddle+".xB_All.bin";
         this->saveVecVecToBin(out_xBBinFileName,xB_AllPerFlush);
         std::string out_xB_PtrFileName=out_xB_PtrAllBinSubDir+filenameMiddle+".xB_PtrAll.bin";
-        save_to_bin_file(xB_Ptr.get(),moveNumInOneFlush*N,out_xB_PtrFileName);
+//        save_to_bin_file(xB_Ptr.get(),moveNumInOneFlush*N,out_xB_PtrFileName);
 
 
 
@@ -608,7 +608,7 @@ void version1dLJPot2Atom::executionMCAfterEq(const int &lag, const int &loopEq, 
         std::string outLBinFileName=outLAllBinSubDir+filenameMiddle+".LAll.bin";
         this->saveVecToBin(outLBinFileName,LAllPerFlush);
         std::string outL_PtrFileName=outL_PtrAllBinSubDir+filenameMiddle+".L_PtrAll.bin";
-        save_to_bin_file(L_Ptr.get(),moveNumInOneFlush,outL_PtrFileName);
+//        save_to_bin_file(L_Ptr.get(),moveNumInOneFlush,outL_PtrFileName);
 
 
         const auto tflushEnd{std::chrono::steady_clock::now()};

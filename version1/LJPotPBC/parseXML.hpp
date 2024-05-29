@@ -74,6 +74,12 @@ public:
     /// @param filename bin file name
     /// @return vector<vector<double>>
     static std::vector<std::vector<double>> readMsgBinVecVec(const std::string &filename);
+    ///
+    /// @param filename file name
+    /// @param values values in file
+    /// @param number_of_values number of values
+    bool loadPtrMsgFile(const std::string& filename, std::shared_ptr<double[]>& values, size_t& number_of_values);
+
 
 
     void parseUFiles();
@@ -121,7 +127,7 @@ public:
     double beta = 0;
     int moveNumInOneFlush = 3000;
 //    int loopNumAfterEq = 0;
-    int cellNum = 0;
+    int cellNum = 10;
     std::vector<std::string> UFilesSelected;
     std::vector<std::string> xAFilesSelected;
     std::vector<std::string> xBFilesSelected;
@@ -156,7 +162,6 @@ public:
 
     arma::dmat E_xA2;
     arma::dmat E_xB2;
-
 
 };
 

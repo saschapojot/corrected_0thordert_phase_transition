@@ -52,6 +52,12 @@ public:
         this->q2 = q2Val;
         this->r0=r0;
 
+
+        std::cout<<"alpha1="<<alpha1<<", beta1="<<beta1
+                 <<", p1="<<p1<<", q1="<<q1
+                 <<", alpha2="<<alpha2<<", beta2="<<beta2
+                 <<", p2="<<p2<<", q2="<<q2<<std::endl;
+
     }//end of constructor
 public:
     virtual double operator()(const arma::dcolvec &xA, const arma::dcolvec &xB, const double &L) const = 0;
@@ -61,22 +67,33 @@ public:
 
 
 public:
-    double alpha1 = 0;
-    double alpha2 = 0;
-    double beta1 = 0;
-    double beta2 = 0;
-    double p1 = 0;
-    double p2 = 0;
-    double q1 = 0;
-    double q2 = 0;
-    double r0=0;// eq distance
+    double alpha1;
+    double alpha2;
+    double beta1;
+    double beta2;
+    double p1;
+    double p2 ;
+    double q1 ;
+    double q2 ;
+    double r0;// eq distance
 
 };
 
 class LJPotPBC : public potentialFunction {
 public:
     LJPotPBC(const double &alpha1Val, const double &alpha2Val, const double &beta1Val,
-             const double &beta2Val, const double &p1Val, const double &p2Val, const double &q1Val, const double &q2Val, const double &r0Val):potentialFunction(alpha1Val, alpha2Val, beta1Val, beta2Val, p1Val, p2Val, q1Val, q2Val, r0Val)  {}//end of constructor
+             const double &beta2Val, const double &p1Val, const double &p2Val, const double &q1Val, const double &q2Val, const double &r0Val):potentialFunction(alpha1Val, alpha2Val, beta1Val, beta2Val, p1Val, p2Val, q1Val, q2Val, r0Val)  {
+        this->alpha1 = alpha1Val;
+        this->alpha2 = alpha2Val;
+        this->beta1 = beta1Val;
+        this->beta2 = beta2Val;
+        this->p1 = p1Val;
+        this->p2 = p2Val;
+        this->q1 = q1Val;
+        this->q2 = q2Val;
+        this->r0=r0Val;
+
+    }//end of constructor
 
 public:
     ///
@@ -100,7 +117,7 @@ public:
         arma::dcolvec vecPart1 = alpha1 * arma::pow(rVec, -p1);
         arma::dcolvec vecPart2 = -beta1 * arma::pow(rVec, -q1);
         arma::dcolvec vecPart3 = arma::pow(rVec, 4);
-
+        std::cout<<"vecPart1="<<vecPart1<<", vecPart2="<<vecPart2<<", vecPart3="<<vecPart3<<std::endl;
         double val = arma::sum(vecPart1) + arma::sum(vecPart2) + arma::sum(vecPart3);
 //        std::cout<<"V1Total="<<val<<std::endl;
         return val;
@@ -161,15 +178,15 @@ public:
 
 
 public:
-    double alpha1 = 0;
-    double alpha2 = 0;
-    double beta1 = 0;
-    double beta2 = 0;
-    double p1 = 0;
-    double p2 = 0;
-    double q1 = 0;
-    double q2 = 0;
-    double r0=0;// eq distance
+    double alpha1;
+    double alpha2;
+    double beta1;
+    double beta2 ;
+    double p1 ;
+    double p2 ;
+    double q1 ;
+    double q2 ;
+    double r0;// eq distance
 
 
 };

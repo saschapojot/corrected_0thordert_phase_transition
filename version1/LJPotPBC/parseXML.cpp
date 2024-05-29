@@ -67,8 +67,8 @@ void reader::sortFiles() {
     this->sorted_UFilesAll = this->sortOneDir(this->UFilesAll);
     this->sorted_xAFilesAll = this->sortOneDir(this->xAFilesAll);
     this->sorted_xBFilesAll = this->sortOneDir(this->xBFilesAll);
-    std::cout<<"sorted_UFilesAll[0]="<<sorted_UFilesAll[0]<<std::endl;
-    std::cout<<"sorted_UFilesAll[1]="<<sorted_UFilesAll[1]<<std::endl;
+//    std::cout<<"sorted_UFilesAll[0]="<<sorted_UFilesAll[0]<<std::endl;
+//    std::cout<<"sorted_UFilesAll[1]="<<sorted_UFilesAll[1]<<std::endl;
 
 }
 
@@ -158,7 +158,7 @@ void reader::UAndxFilesSelected() {
     fileNumSelected=sorted_UFilesAll.size()-numfilePart0+numFilePart0Selected;
 
     std::cout<<"fileNumSelected="<<fileNumSelected<<std::endl;
-
+    std::cout<<"all file number: "<<sorted_UFilesAll.size()<<std::endl;
 
     for (int i = sorted_UFilesAll.size() - fileNumSelected; i < sorted_UFilesAll.size(); i++) {
         this->UFilesSelected.push_back(sorted_UFilesAll[i]);
@@ -205,7 +205,7 @@ void reader::parseUFiles() {
     }
 //    std::cout<<"lag="<<lag<<std::endl;
 //    std::cout<<"len(UIn)="<<UIn.size()<<std::endl;
-//    std::cout<<"len(USelected)="<<USelected.size()<<std::endl;
+    std::cout<<"len(USelected)="<<USelected.size()<<std::endl;
 //    armaU= arma::dcolvec (USelected);
 
 //    std::cout<<armaU<<std::endl;
@@ -218,7 +218,38 @@ void reader::parsexAxB() {
 
     //A
     const auto tAStart{std::chrono::steady_clock::now()};
-    //reserve lengths
+
+    std::cout << "cellNum=" << cellNum << std::endl;
+///////////////////////////////////////////////////////////////////////////////
+    //read xA using ptr
+
+//    std::shared_ptr<double[]> xA_Ptr=std::shared_ptr<double[]>(new double[moveNumInOneFlush * cellNum]);
+//    std::shared_ptr<double[]>xB_Ptr=std::shared_ptr<double[]>(new double[moveNumInOneFlush * cellNum]);;
+//    xASelectedFlat.reserve(static_cast<size_t>(moveNumInOneFlush * cellNum*xAFilesSelected.size()/lag)+1);
+//    size_t lenA;
+//    int counterA=0;
+//    int pointerStart=0;
+//
+//   for(const std::string &onexAFile: xAFilesSelected){
+//       loadPtrMsgFile(onexAFile,xA_Ptr,lenA);
+//       int i=pointerStart;
+//       while(i<moveNumInOneFlush){
+//           for(int k=i*cellNum;k<(i+1)*cellNum;k++){
+//               xASelectedFlat.push_back(xA_Ptr[k]);
+//           }
+//           i+=lag;
+//           counterA++;
+//       }
+//       int rest=moveNumInOneFlush-(i-lag);
+//       pointerStart=lag-rest;
+//
+//
+//   }
+    //end of read xA using ptr
+    /////////////////////////////////////////////////////////////////////////////////
+//    std::cout<<"cellNum="<<cellNum<<std::endl;
+///////////////////////////////////////////////////////////////////////
+//parse xA using msgpack
     std::vector<std::vector<double>> zerothVecVec = readMsgBinVecVec(xAFilesSelected[0]);
 
     cellNum = zerothVecVec[0].size();
@@ -233,19 +264,9 @@ void reader::parsexAxB() {
         xBIn.push_back(initVecVal);
     }
     int AStart = 0;
-
     for (const std::string &onexAFile: xAFilesSelected) {
         std::vector<std::vector<double>> vecVecInOneFile = readMsgBinVecVec(onexAFile);
-//    std::ifstream ifs(onexAFile);
-//        if (!ifs.is_open()) {
-//            std::cerr << "cannot open "<<onexAFile << std::endl;
-//            return;
-//        }
-//        boost::archive::xml_iarchive ia(ifs);
-//        ia >> BOOST_SERIALIZATION_NVP(vecVecInOneFile);
-//
 
-//        xAIn.insert(xAIn.end(),vecVecInOneFile.begin(),vecVecInOneFile.end());
         int lengthTmp = vecVecInOneFile.size();
         for (int i = AStart; i < AStart + lengthTmp; i++) {
             xAIn[i] = vecVecInOneFile[i - AStart];
@@ -253,19 +274,20 @@ void reader::parsexAxB() {
         AStart += lengthTmp;
 
     }
-
-//    std::cout<<"cellNum="<<cellNum<<std::endl;
-
-    const auto tAEnd{std::chrono::steady_clock::now()};
-    const std::chrono::duration<double> A_elapsed_secondsAll{tAEnd - tAStart};
-    std::cout << "parse A time: " << A_elapsed_secondsAll.count() << " s" << std::endl;
-
     int counterA = 0;
     for (int i = 0; i < xAIn.size(); i += lag + 1) {
 //        xASelected.push_back(xAIn[i]);
         xASelectedFlat.insert(xASelectedFlat.end(), xAIn[i].begin(), xAIn[i].end());
         counterA++;
     }
+
+//end of parse xA using msgpack
+////////////////////////////////////////////////////////////////////////
+    const auto tAEnd{std::chrono::steady_clock::now()};
+    const std::chrono::duration<double> A_elapsed_secondsAll{tAEnd - tAStart};
+    std::cout << "parse A time: " << A_elapsed_secondsAll.count() << " s" << std::endl;
+
+
     arma_xA = ((arma::dmat(xASelectedFlat)).reshape(cellNum, counterA)).t();
 
 
@@ -276,6 +298,30 @@ void reader::parsexAxB() {
 
 
     //B
+
+    ////////////////////////////////////////////////////////
+    //read xB using ptr
+//    xBSelectedFlat.reserve(static_cast<size_t>(moveNumInOneFlush * cellNum*xAFilesSelected.size()/lag)+1);
+//    size_t lenB;
+////    int counterA=0;
+//    pointerStart=0;
+//    for(const std::string &onexBFile: xBFilesSelected){
+//        loadPtrMsgFile(onexBFile,xB_Ptr,lenB);
+//        int i=pointerStart;
+//        while(i<moveNumInOneFlush){
+//            for(int k=i*cellNum;k<(i+1)*cellNum;k++){
+//                xBSelectedFlat.push_back(xB_Ptr[k]);
+//            }
+//            i+=lag;
+//        }
+//        int rest=moveNumInOneFlush-(i-lag);
+//        pointerStart=lag-rest;
+//
+//    }
+    //end of read xB using ptr
+    ///////////////////////////////////////
+    /////////////////////////////////////////////////////
+    //read xB using msgpack
     int BStart = 0;
     const auto tBStart{std::chrono::steady_clock::now()};
     for (const std::string &onexBFile: xBFilesSelected) {
@@ -289,20 +335,28 @@ void reader::parsexAxB() {
 
     }
 
-    const auto tBEnd{std::chrono::steady_clock::now()};
-    const std::chrono::duration<double> B_elapsed_secondsAll{tBEnd - tBStart};
-    std::cout << "parse B time: " << B_elapsed_secondsAll.count() << " s" << std::endl;
+
 
     for (int i = 0; i < xBIn.size(); i += lag + 1) {
         xBSelectedFlat.insert(xBSelectedFlat.end(), xBIn[i].begin(), xBIn[i].end());
     }
 
+
+
+    //end of read xB using msgpack
+    /////////////////////////////////////////////////////////
+    const auto tBEnd{std::chrono::steady_clock::now()};
+    const std::chrono::duration<double> B_elapsed_secondsAll{tBEnd - tBStart};
+    std::cout << "parse B time: " << B_elapsed_secondsAll.count() << " s" << std::endl;
+
+
+
     arma_xB = ((arma::dmat(xBSelectedFlat)).reshape(cellNum, counterA)).t();
 
 
 //    arma::drowvec meanB=arma::mean(arma_xB,0);
-//    std::cout<<"B size=("<<arma_xB.n_rows<<", "<<arma_xB.n_cols<<")"<<std::endl;
-//    std::cout<<"-------------------------"<<std::endl;
+    std::cout<<"B size=("<<arma_xB.n_rows<<", "<<arma_xB.n_cols<<")"<<std::endl;
+    std::cout<<"-------------------------"<<std::endl;
 }
 
 
@@ -531,3 +585,47 @@ void reader::computeGBB(){
     ofs.close();
 
 }
+
+
+///
+/// @param filename file name
+/// @param values values in file
+/// @param number_of_values number of values
+bool reader::loadPtrMsgFile(const std::string& filename, std::shared_ptr<double[]>& values, size_t& number_of_values){
+    std::ifstream file(filename, std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return false;
+    }
+
+    // Read the file content into a buffer
+    std::vector<char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    file.close();
+
+    // Unpack the data to a MessagePack object
+    msgpack::object_handle oh = msgpack::unpack(buffer.data(), buffer.size());
+    msgpack::object obj = oh.get();
+
+    // Check if the data is an array
+    if (obj.type != msgpack::type::ARRAY) {
+        std::cerr << "Data is not an array" << std::endl;
+        return false;
+    }
+
+    // Get the number of values
+    number_of_values = obj.via.array.size;
+
+    // Allocate memory for the values
+//    values = std::shared_ptr<double[]>(new double[number_of_values]);
+
+    // Load the values into the preallocated shared_ptr<double[]>
+    for (size_t i = 0; i < number_of_values; ++i) {
+        if (obj.via.array.ptr[i].type != msgpack::type::FLOAT64) {
+            std::cerr << "Element " << i << " type: " << obj.via.array.ptr[i].type << " is not a double value" << std::endl;
+            return false;
+        }
+        values[i] = obj.via.array.ptr[i].via.f64;
+    }
+
+}
+
